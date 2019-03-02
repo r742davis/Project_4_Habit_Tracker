@@ -58,12 +58,12 @@ end
     results = DB.exec("SELECT * FROM habits;")
     return results.map do |result|
       # turn completed value into boolean
-      return result
       if result["completed"] === 'f'
         result["completed"] = false
       else
         result["completed"] = true
       end
+      return result
     end
   end
 
