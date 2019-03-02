@@ -54,8 +54,17 @@ end
   #                      ROUTES
   # ==================================================
   # get all habits
-  def.self.all
-
+  def self.all
+    results = DB.exec("SELECT * FROM habits;")
+    return results.map do |result|
+      # turn completed value into boolean
+      return result
+      if result["completed"] === 'f'
+        result["completed"] = false
+      else
+        result["completed"] = true
+      end
+    end
   end
 
   #get one habit by id
