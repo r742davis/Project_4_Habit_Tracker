@@ -57,13 +57,11 @@ end
   def self.all
     results = DB.exec("SELECT * FROM habits;")
     return results.map do |result|
-      # turn completed value into boolean
-      if result["completed"] === 'f'
-        result["completed"] = false
-      else
-        result["completed"] = true
-      end
-      return result
+      {
+        "id" => result["id"].to_i,
+        "habit_item" => result["habit_item"],
+        "completed" => result["completed"] ? false : true
+      }
     end
   end
 
