@@ -6,7 +6,7 @@ DB = PG.connect({:host => "localhost", :port => 5432, :dbname => 'habit_tracker_
 # initialize options hash
 def initialize(opts = {}, id = nil)
   @id = id.to_i
-  @task_item = opts["habit_item"]
+  @habit_item = opts["habit_item"]
   @completed = opts["completed"]
 end
 
@@ -60,29 +60,50 @@ end
       {
         "id" => result["id"].to_i,
         "habit_item" => result["habit_item"],
-        "completed" => result["completed"] ? false : true
+        "completed" => result["completed"] === 'f' ? false : true
       }
-    end
-  end
+    end #results.map end
+  end #self.all-end
 
   #get one habit by id
   def self.find id
-
-  end
+    result = DB.exec_prepared("find_habit", [id]).first
+    return {
+      "id" => result["id"].to_i,
+      "habit_item" => result["habit_item"],
+      "completed" => result["completed"] === 'f' ? false : true
+    }
+  end #self.find-end
 
   #create a habit
   def self.create opts
-
-  end
+    opts["completed"] === 'f' ? false : ''
+    results = DB.exec_prepared("create_habit", [opts["habit_item"], opts["completed"]])
+    result = results.first
+    return {
+      "id" => result["id"].to_i,
+      "habit_item" => result["habit_item"],
+      "completed" => result["completed"] === 'f' ? false : true
+    }
+  end #self.create-end
 
   #delete a habit
   def self.delete id
-
-  end
+    results = DB.exec_prepared("delete_habit", [id])
+    return {
+      "deleted" => true
+    }
+  end #self.delete-end
 
   #update a habit
   def self.update id, opts
-
-  end
+    results = DB.exec_prepared("update_habit", [id, opts["habit_item"], opts["completed"]])
+    result = results.first
+    return {
+      "id" => result["id"].to_i,
+      "habit_item" => result["habit_item"],
+      "completed" => result["completed"] === 'f' ? false : true
+    }
+  end #self.delete-end
 
 end #Habit class end
